@@ -6,6 +6,10 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "**/*.code-workspace": true
+        "**/*.code-workspace": true,
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/target": true,
+        "**/.settings": true
     }
 }
