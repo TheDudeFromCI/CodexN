@@ -15,12 +15,14 @@ public final class DataType {
      * 
      * @param name - The name of this data type.
      */
-    public DataType(String name) {
+    DataType(String name) {
         this.name = name;
     }
 
     /**
-     * Adds a new parent data type that this data type should extend from.
+     * Adds a new parent data type that this data type should extend from. This
+     * method should only be called on other data types that were created within the
+     * same environment.
      * 
      * @param parent - The new parent data type.
      * @throws IllegalArgumentException If adding the requested data type as a
@@ -28,6 +30,9 @@ public final class DataType {
      *                                  occur.
      */
     public void addParentType(DataType parent) {
+        if (this.parents.contains(parent))
+            return;
+
         verifyNoCircularDependencies(parent);
         this.parents.add(parent);
     }

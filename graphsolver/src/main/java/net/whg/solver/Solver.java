@@ -1,79 +1,44 @@
 package net.whg.solver;
 
-import java.util.ArrayList;
-import java.util.concurrent.PriorityBlockingQueue;
-
-import net.whg.graph.Environment;
-import net.whg.graph.Graph;
-
+/**
+ * Creates and maintains a list of worker threads for navigating the search
+ * tree.
+ */
 public class Solver {
-    private final PriorityBlockingQueue<GraphResult> open = new PriorityBlockingQueue<>();
-    private final PriorityBlockingQueue<GraphResult> solutions = new PriorityBlockingQueue<>();
-    private final Environment env;
     private final Thread[] threads;
-    private boolean running = true;
+    private final Worker[] workers;
 
-    public Solver(String graphName, Environment env, int workers) {
-        this.env = env;
-
-        var baseGraph = new Graph(graphName, env.getInputNodeType(), env.getOutputNodeType());
-        open.add(new GraphResult(baseGraph, 0));
-
-        threads = new Thread[workers];
-        for (var i = 0; i < threads.length; i++) {
-            threads[i] = new Thread(createWorker());
-            threads[i].setDaemon(false);
+    /**
+     * Creates and starts a list of new worker daemon threads.
+     * 
+     * @param tree     - The search tree to navigate.
+     * @param nWorkers - The number of workers to create.
+     */
+    public Solver(Tree tree, int nWorkers) {
+        threads = new Thread[nWorkers];
+        workers = new Worker[nWorkers];
+        for (var i = 0; i < nWorkers; i++) {
+            workers[i] = new Worker(tree);
+            threads[i] = new Thread(workers[i]);
+            threads[i].setDaemon(true);
             threads[i].start();
         }
     }
 
-    private Runnable createWorker() {
-        return () -> {
-            var buffer = new ArrayList<Graph>();
-
-            while (running) {
-                GraphResult next;
-
-                try {
-                    next = open.take();
-                } catch (InterruptedException e) {
-                    return;
-                }
-
-                buffer.clear();
-                next.graph().getChildGraphs(buffer, env);
-
-                for (var graph : buffer) {
-                    if (!env.isValid(graph))
-                        continue;
-
-                    var h = env.getHeuristic(graph);
-                    var result = new GraphResult(graph, h);
-
-                    if (graph.isComplete())
-                        solutions.put(result);
-                    else
-                        open.put(result);
-                }
-            }
-        };
-    }
-
-    public void stop() {
-        running = false;
+    /**
+     * Triggers all worker threads to stop and waits for them to finish executing.
+     * 
+     * @throws InterruptedException If the thread is interrupted while waiting for
+     *                              the threads to stop.
+     */
+    public void stop() throws InterruptedException {
+        for (var i = 0; i < workers.length; i++) {
+            workers[i].stop();
+            threads[i].interrupt();
+        }
 
         for (var i = 0; i < threads.length; i++) {
-            threads[i].interrupt();
-
-            try {
-                threads[i].join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            threads[i].join();
         }
-    }
-
-    public Graph getSolution() throws InterruptedException {
-        return solutions.take().graph();
     }
 }

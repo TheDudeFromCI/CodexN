@@ -1,7 +1,9 @@
 package net.whg.graph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.whg.util.SafeArrayList;
 
@@ -9,6 +11,7 @@ public class Graph {
     private final String name;
     private final SafeArrayList<Connection> connections;
     private final SafeArrayList<Node> nodes;
+    private final boolean isComplete;
 
     public Graph(String name, NodeType inputNodeType, NodeType outputNodeType) {
         if (!outputNodeType.isOutputType())
@@ -20,6 +23,8 @@ public class Graph {
 
         nodes.add(new Node(outputNodeType));
         nodes.add(new Node(inputNodeType));
+
+        isComplete = nextOpenNode() == null;
     }
 
     public Graph(Graph parent) {
@@ -38,6 +43,8 @@ public class Graph {
 
             connections.add(new Connection(nodeA, aIndex, nodeB, bIndex));
         }
+
+        isComplete = nextOpenNode() == null;
     }
 
     public Node getOutputNode() {
@@ -181,6 +188,48 @@ public class Graph {
     }
 
     public boolean isComplete() {
-        return nextOpenNode() == null;
+        return isComplete;
+    }
+
+    public void execute(Object[] inputs, Object[] outputs) {
+        if (!isComplete)
+            throw new IllegalStateException("Graph is not complete!");
+
+        if (inputs.length != getInputNode().type().getOutputCount())
+            throw new IllegalStateException("Unexpected number of inputs!");
+
+        if (outputs.length != getOutputNode().type().getInputCount())
+            throw new IllegalStateException("Unexpected number of outputs!");
+
+        var cache = new HashMap<Node, Object[]>();
+        cache.put(getInputNode(), inputs);
+
+        var out = getExecutionOutput(getOutputNode(), cache);
+        System.arraycopy(out, 0, outputs, 0, out.length);
+    }
+
+    private Object[] getExecutionOutput(Node node, Map<Node, Object[]> cache) {
+        if (cache.containsKey(node))
+            return cache.get(node);
+
+        var inputs = new Object[node.type().getInputCount()];
+
+        for (var connection : connections) {
+            if (connection.nodeB() != node)
+                continue;
+
+            var incoming = getExecutionOutput(connection.nodeA(), cache);
+            inputs[connection.bIndex()] = incoming[connection.aIndex()];
+        }
+
+        if (node.type().isOutputType()) {
+            cache.put(node, inputs);
+            return inputs;
+        } else {
+            var outputs = new Object[node.type().getOutputCount()];
+            node.type().getExecutor().execute(inputs, outputs);
+            cache.put(node, outputs);
+            return outputs;
+        }
     }
 }

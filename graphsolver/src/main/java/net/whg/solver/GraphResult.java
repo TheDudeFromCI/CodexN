@@ -8,6 +8,6 @@ import net.whg.graph.Graph;
 public record GraphResult(Graph graph, float heuristic) implements Comparable<GraphResult> {
     @Override
     public int compareTo(GraphResult o) {
-        return Float.compare(heuristic, o.heuristic);
+        return Float.compare(o.heuristic, heuristic);
     }
 }

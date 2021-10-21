@@ -2,6 +2,7 @@ package net.whg.graph;
 
 import java.util.List;
 
+import net.whg.impl.libs.Library;
 import net.whg.solver.Axiom;
 import net.whg.solver.Heuristic;
 import net.whg.util.SafeArrayList;
@@ -14,18 +15,35 @@ public class Environment {
     private final SafeArrayList<NodeType> nodeTypes = new SafeArrayList<>();
     private final SafeArrayList<Axiom> axioms = new SafeArrayList<>();
     private final SafeArrayList<Heuristic> heuristics = new SafeArrayList<>();
-    private final NodeType inputNodeType;
-    private final NodeType outputNodeType;
+    private final SafeArrayList<DataType> dataTypes = new SafeArrayList<>();
+    private final SafeArrayList<Library> libraries = new SafeArrayList<>();
 
     /**
-     * Creates a new Environment instance.
+     * Gets the node type in this environment that is marked as an input type. If
+     * there are several loaded input node types, only the first one is returned.
      * 
-     * @param inputNodeType  - The type of node to use as a graph input node.
-     * @param outputNodeType - The type of node to use as a graph output node.
+     * @return The input node type, or null if there is no input node type.
      */
-    public Environment(NodeType inputNodeType, NodeType outputNodeType) {
-        this.inputNodeType = inputNodeType;
-        this.outputNodeType = outputNodeType;
+    public NodeType getInputNodeType() {
+        for (var nodeType : nodeTypes)
+            if (nodeType.isInputType())
+                return nodeType;
+
+        return null;
+    }
+
+    /**
+     * Gets the node type in this environment that is marked as an output type. If
+     * there are several loaded output node types, only the first one is returned.
+     * 
+     * @return The output node type, or null if there is no output node type.
+     */
+    public NodeType getOutputNodeType() {
+        for (var nodeType : nodeTypes)
+            if (nodeType.isOutputType())
+                return nodeType;
+
+        return null;
     }
 
     /**
@@ -45,24 +63,6 @@ public class Environment {
      */
     public List<NodeType> getNodeTypes() {
         return nodeTypes.asReadOnly();
-    }
-
-    /**
-     * Gets the type of node to use as a graph input node.
-     * 
-     * @return The input node type.
-     */
-    public NodeType getInputNodeType() {
-        return inputNodeType;
-    }
-
-    /**
-     * Gets the type of node to use as a graph output node.
-     * 
-     * @return The output node type.
-     */
-    public NodeType getOutputNodeType() {
-        return outputNodeType;
     }
 
     /**
@@ -101,6 +101,12 @@ public class Environment {
         return heuristics.asReadOnly();
     }
 
+    /**
+     * Checks if the provided graph passes all axioms in this environment.
+     * 
+     * @param graph - The graph to test.
+     * @return True if the graph passes all axioms. False otherwise.
+     */
     public boolean isValid(Graph graph) {
         for (var axiom : axioms) {
             if (!axiom.verifyGraph(graph))
@@ -110,6 +116,12 @@ public class Environment {
         return true;
     }
 
+    /**
+     * Gets the sum of all heuristic values calculated for this graph.
+     * 
+     * @param graph - The graph to get the heuristic of.
+     * @return The heuristic value.
+     */
     public float getHeuristic(Graph graph) {
         float h = 0;
 
@@ -118,5 +130,42 @@ public class Environment {
         }
 
         return h;
+    }
+
+    /**
+     * Gets or creates a data type in this environment with the given name.
+     * 
+     * @param name - The name of the data type.
+     * @return The corresponding data type.
+     */
+    public DataType getDataType(String name) {
+        for (var dataType : dataTypes)
+            if (dataType.getName().equals(name))
+                return dataType;
+
+        var dataType = new DataType(name);
+        dataTypes.add(dataType);
+
+        return dataType;
+    }
+
+    /**
+     * Loads a library into this environment and all corresponding library
+     * dependencies.
+     * 
+     * @param lib - The library to load.
+     */
+    public void loadLibrary(Library lib) {
+        lib.register(this);
+        libraries.add(lib);
+    }
+
+    /**
+     * Gets a read-only list of all libraries in this environment.
+     * 
+     * @return A list of all libraries.
+     */
+    public List<Library> getLoadedLibraries() {
+        return libraries.asReadOnly();
     }
 }

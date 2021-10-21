@@ -10,21 +10,24 @@ public final class NodeType {
     private final String name;
     private final DataType[] inputs;
     private final DataType[] outputs;
+    private final Executor executor;
 
     /**
      * Creates a new NodeType instance.
      * 
-     * @param name    - The name of this node type.
-     * @param inputs  - The array of inputs argument data types, in order.
-     * @param outputs - The array of output argument data types, in order.
+     * @param name     - The name of this node type.
+     * @param executor - The executor for this node type.
+     * @param inputs   - The array of inputs argument data types, in order.
+     * @param outputs  - The array of output argument data types, in order.
      * @throws IllegalArgumentException If the number of inputs and the number of
      *                                  outputs are both equal to 0.
      */
-    public NodeType(String name, DataType[] inputs, DataType[] outputs) {
+    public NodeType(String name, Executor executor, DataType[] inputs, DataType[] outputs) {
         if (inputs.length == 0 && outputs.length == 0)
             throw new IllegalArgumentException("NodeType has not inputs or outputs!");
 
         this.name = name;
+        this.executor = executor;
         this.inputs = Arrays.copyOf(inputs, inputs.length);
         this.outputs = Arrays.copyOf(outputs, outputs.length);
     }
@@ -128,5 +131,14 @@ public final class NodeType {
         sb.append(")");
 
         return sb.toString();
+    }
+
+    /**
+     * Gets the executor for this node type.
+     * 
+     * @return The executor.
+     */
+    public Executor getExecutor() {
+        return executor;
     }
 }
