@@ -19,39 +19,53 @@ public class Arithmetic extends Library {
         // ===== FLOAT OPERATIONS =====
 
         env.addNodeType(n("Add", (inputs, outputs) -> {
-            outputs[0] = (float) inputs[0] + (float) inputs[1];
+            var a = inputs[0] instanceof Float ? (float) inputs[0] : (int) inputs[0];
+            var b = inputs[1] instanceof Float ? (float) inputs[1] : (int) inputs[1];
+            outputs[0] = a + b;
         }, d(floatType, floatType), d(floatType)));
 
         env.addNodeType(n("Subtract", (inputs, outputs) -> {
-            outputs[0] = (float) inputs[0] - (float) inputs[1];
+            var a = inputs[0] instanceof Float ? (float) inputs[0] : (int) inputs[0];
+            var b = inputs[1] instanceof Float ? (float) inputs[1] : (int) inputs[1];
+            outputs[0] = a - b;
         }, d(floatType, floatType), d(floatType)));
 
         env.addNodeType(n("Multiply", (inputs, outputs) -> {
-            outputs[0] = (float) inputs[0] * (float) inputs[1];
+            var a = inputs[0] instanceof Float ? (float) inputs[0] : (int) inputs[0];
+            var b = inputs[1] instanceof Float ? (float) inputs[1] : (int) inputs[1];
+            outputs[0] = a * b;
         }, d(floatType, floatType), d(floatType)));
 
         env.addNodeType(n("Divide", (inputs, outputs) -> {
-            outputs[0] = (float) inputs[0] / (float) inputs[1];
+            var a = inputs[0] instanceof Float ? (float) inputs[0] : (int) inputs[0];
+            var b = inputs[1] instanceof Float ? (float) inputs[1] : (int) inputs[1];
+            outputs[0] = a / b;
         }, d(floatType, floatType), d(floatType)));
 
         env.addNodeType(n("Power", (inputs, outputs) -> {
-            outputs[0] = (float) Math.pow((float) inputs[0], (float) inputs[1]);
+            var a = inputs[0] instanceof Float ? (float) inputs[0] : (int) inputs[0];
+            var b = inputs[1] instanceof Float ? (float) inputs[1] : (int) inputs[1];
+            outputs[0] = (float) Math.pow(a, b);
         }, d(floatType, floatType), d(floatType)));
 
         env.addNodeType(n("Floor", (inputs, outputs) -> {
-            outputs[0] = (int) Math.floor((float) inputs[0]);
+            var a = inputs[0] instanceof Float ? (float) inputs[0] : (int) inputs[0];
+            outputs[0] = (int) Math.floor(a);
         }, d(floatType), d(integerType)));
 
         env.addNodeType(n("Ceiling", (inputs, outputs) -> {
-            outputs[0] = (int) Math.ceil((float) inputs[0]);
+            var a = inputs[0] instanceof Float ? (float) inputs[0] : (int) inputs[0];
+            outputs[0] = (int) Math.ceil(a);
         }, d(floatType), d(integerType)));
 
         env.addNodeType(n("Round", (inputs, outputs) -> {
-            outputs[0] = (int) Math.round((float) inputs[0]);
+            var a = inputs[0] instanceof Float ? (float) inputs[0] : (int) inputs[0];
+            outputs[0] = (int) Math.round(a);
         }, d(floatType), d(integerType)));
 
         env.addNodeType(n("SquareRoot", (inputs, outputs) -> {
-            outputs[0] = (float) Math.sqrt((float) inputs[0]);
+            var a = inputs[0] instanceof Float ? (float) inputs[0] : (int) inputs[0];
+            outputs[0] = (int) Math.sqrt(a);
         }, d(floatType), d(floatType)));
 
         // ==============================
