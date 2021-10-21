@@ -183,6 +183,6 @@ public class GraphRenderer {
 
     @Override
     public String toString() {
-        return asConnectionList();
+        return asFunction();
     }
 }

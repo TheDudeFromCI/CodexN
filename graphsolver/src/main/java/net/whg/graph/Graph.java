@@ -11,7 +11,7 @@ public class Graph {
     private final String name;
     private final SafeArrayList<Connection> connections;
     private final SafeArrayList<Node> nodes;
-    private final boolean isComplete;
+    private boolean complete;
 
     public Graph(String name, NodeType inputNodeType, NodeType outputNodeType) {
         if (!outputNodeType.isOutputType())
@@ -23,8 +23,6 @@ public class Graph {
 
         nodes.add(new Node(outputNodeType));
         nodes.add(new Node(inputNodeType));
-
-        isComplete = nextOpenNode() == null;
     }
 
     public Graph(Graph parent) {
@@ -43,8 +41,6 @@ public class Graph {
 
             connections.add(new Connection(nodeA, aIndex, nodeB, bIndex));
         }
-
-        isComplete = nextOpenNode() == null;
     }
 
     public Node getOutputNode() {
@@ -96,8 +92,8 @@ public class Graph {
             if (connection.nodeB() != node)
                 continue;
 
-            var index = connection.bIndex();
-            if (index < node.type().getInputCount() - 1)
+            var index = connection.bIndex() + 1;
+            if (index < node.type().getInputCount())
                 return index;
             else
                 return -1;
@@ -145,6 +141,7 @@ public class Graph {
 
             var connection = new Connection(oldParent, outputIndex, oldNode, index);
             newGraph.connections.add(connection);
+            newGraph.complete = newGraph.nextOpenNode() == null;
 
             graphs.add(newGraph);
         }
@@ -172,6 +169,7 @@ public class Graph {
 
                 newGraph.nodes.add(newNode);
                 newGraph.connections.add(connection);
+                newGraph.complete = newGraph.nextOpenNode() == null;
 
                 graphs.add(newGraph);
             }
@@ -188,11 +186,11 @@ public class Graph {
     }
 
     public boolean isComplete() {
-        return isComplete;
+        return complete;
     }
 
     public void execute(Object[] inputs, Object[] outputs) {
-        if (!isComplete)
+        if (!complete)
             throw new IllegalStateException("Graph is not complete!");
 
         if (inputs.length != getInputNode().type().getOutputCount())

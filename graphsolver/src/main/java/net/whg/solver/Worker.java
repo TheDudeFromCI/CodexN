@@ -36,12 +36,13 @@ public class Worker implements Runnable {
             if (!env.isValid(graph))
                 continue;
 
-            var h = env.getHeuristic(graph);
-
-            if (graph.isComplete())
-                tree.putSolution(graph, h);
-            else
+            if (graph.isComplete()) {
+                var f = env.getFitness(graph);
+                tree.putSolution(graph, f);
+            } else {
+                var h = env.getHeuristic(graph);
                 tree.putGraph(graph, h);
+            }
         }
 
         buffer.clear();

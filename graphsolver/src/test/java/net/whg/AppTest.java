@@ -26,31 +26,42 @@ public class AppTest {
         env.addNodeType(new NodeType("Input", null, new DataType[0], new DataType[] { f, f, f }));
         env.addNodeType(new NodeType("Output", null, new DataType[] { f }, new DataType[0]));
 
-        var inputs = new Object[] { 10, 20, 30 };
+        var inputs = new Object[] { 10, 20f, 30f };
         var outputs = new Object[1];
-        env.addAxiom((g) -> {
+        env.addAxiom(g -> {
             if (!g.isComplete())
                 return true;
 
+            try {
+                g.execute(inputs, outputs);
+
+                var a = outputs[0] instanceof Float ? (float) outputs[0] : (int) outputs[0];
+                return Float.isFinite(a) && !Float.isNaN(a);
+            } catch (Exception e) {
+                return false;
+            }
+        });
+
+        env.addFitnessEvaluator(g -> {
             g.execute(inputs, outputs);
-            return (int) outputs[0] == 230;
+
+            var a = outputs[0] instanceof Float ? (float) outputs[0] : (int) outputs[0];
+            return -Math.abs(a - 230);
         });
 
         var tree = new Tree("Madd", env);
         var worker = new Worker(tree);
 
-        for (var i = 0; tree.getNumSolutionsFound() == 0; i++) {
+        for (var i = 1; i <= 150_000; i++) {
             worker.step();
 
             if (i % 1000 == 0) {
-                System.out.printf("%08d, %05d, %08d%n", tree.getNumGraphsProcessed(), tree.getNumSolutionsFound(),
-                        tree.getNumOpenGraphs());
-                System.out.println(tree.peekNextGraph());
+                var best = tree.peekBestSolution();
+
+                System.out.printf("%08d, %05d, %08d, (Fitness: %.02f)%n", tree.getNumGraphsProcessed(),
+                        tree.getNumSolutionsFound(), tree.getNumOpenGraphs(), best.heuristic());
+                System.out.println(best.graph());
             }
         }
-
-        System.out.printf("%08d, %05d, %08d%n", tree.getNumGraphsProcessed(), tree.getNumSolutionsFound(),
-                tree.getNumOpenGraphs());
-        System.out.println(tree.nextGraph());
     }
 }

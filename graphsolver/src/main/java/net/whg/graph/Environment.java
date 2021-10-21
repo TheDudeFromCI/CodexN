@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.whg.impl.libs.Library;
 import net.whg.solver.Axiom;
+import net.whg.solver.FitnessEval;
 import net.whg.solver.Heuristic;
 import net.whg.util.SafeArrayList;
 
@@ -17,6 +18,7 @@ public class Environment {
     private final SafeArrayList<Heuristic> heuristics = new SafeArrayList<>();
     private final SafeArrayList<DataType> dataTypes = new SafeArrayList<>();
     private final SafeArrayList<Library> libraries = new SafeArrayList<>();
+    private final SafeArrayList<FitnessEval> fitness = new SafeArrayList<>();
 
     /**
      * Gets the node type in this environment that is marked as an input type. If
@@ -86,7 +88,7 @@ public class Environment {
     /**
      * Adds a new heuristic to this environment.
      * 
-     * @param heuristic - heuristic axiom to add.
+     * @param heuristic - The heuristic to add.
      */
     public void addHeuristic(Heuristic heuristic) {
         heuristics.add(heuristic);
@@ -99,6 +101,24 @@ public class Environment {
      */
     public List<Heuristic> getHeuristics() {
         return heuristics.asReadOnly();
+    }
+
+    /**
+     * Adds a new fitness evaluation to this environment.
+     * 
+     * @param fitness - fitness evaluator to add.
+     */
+    public void addFitnessEvaluator(FitnessEval eval) {
+        fitness.add(eval);
+    }
+
+    /**
+     * Gets a read-only list of all fitness evaluators in this environment.
+     * 
+     * @return A list of all fitness evaluators.
+     */
+    public List<FitnessEval> getFitnessEvaluators() {
+        return fitness.asReadOnly();
     }
 
     /**
@@ -130,6 +150,26 @@ public class Environment {
         }
 
         return h;
+    }
+
+    /**
+     * Gets the sum of all fitness scores calculated for this graph. The graph
+     * should be complete in order to calculate the fitness score.
+     * 
+     * @param graph - The graph to get the fitness of.
+     * @return The fitness score
+     */
+    public float getFitness(Graph graph) {
+        if (!graph.isComplete())
+            throw new IllegalStateException("Graph must be complete to evaluate fitness!");
+
+        float score = 0;
+
+        for (var fit : fitness) {
+            score += fit.getFitness(graph);
+        }
+
+        return score;
     }
 
     /**

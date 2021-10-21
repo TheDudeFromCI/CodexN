@@ -55,8 +55,8 @@ public class Tree {
      * @throws InterruptedException If the thread is interrupted while waiting for a
      *                              solution to become available.
      */
-    public Graph nextSolution() throws InterruptedException {
-        return solutions.take().graph();
+    public GraphResult nextSolution() throws InterruptedException {
+        return solutions.take();
     }
 
     /**
@@ -116,7 +116,15 @@ public class Tree {
         return open.size();
     }
 
-    public Graph peekNextGraph() {
-        return open.peek().graph();
+    /**
+     * Gets the best solution (as defined by having the highest fitness score)
+     * currently in this tree, but does not remove it from this tree. This method is
+     * non-blocking.
+     * 
+     * @return The solution with the highest fitness score, or null if there are no
+     *         currently discovered solutions.
+     */
+    public GraphResult peekBestSolution() {
+        return solutions.peek();
     }
 }
