@@ -46,7 +46,7 @@ public class AppTest {
             g.execute(inputs, outputs);
 
             var a = outputs[0] instanceof Float ? (float) outputs[0] : (int) outputs[0];
-            return -Math.abs(a - 59);
+            return -Math.abs(a - 60);
         });
 
         var tree = new Tree("Madd", env);
