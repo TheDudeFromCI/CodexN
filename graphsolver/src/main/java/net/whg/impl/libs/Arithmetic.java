@@ -65,7 +65,7 @@ public class Arithmetic extends Library {
 
         env.addNodeType(n("SquareRoot", (inputs, outputs) -> {
             var a = inputs[0] instanceof Float ? (float) inputs[0] : (int) inputs[0];
-            outputs[0] = (int) Math.sqrt(a);
+            outputs[0] = (float) Math.sqrt(a);
         }, d(floatType), d(floatType)));
 
         // ==============================

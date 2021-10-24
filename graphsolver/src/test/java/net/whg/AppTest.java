@@ -26,7 +26,7 @@ public class AppTest {
         env.addNodeType(new NodeType("Input", null, new DataType[0], new DataType[] { f, f, f }));
         env.addNodeType(new NodeType("Output", null, new DataType[] { f }, new DataType[0]));
 
-        var inputs = new Object[] { 10, 20f, 30f };
+        var inputs = new Object[] { 113, 12, 7 };
         var outputs = new Object[1];
         env.addAxiom(g -> {
             if (!g.isComplete())
@@ -46,13 +46,13 @@ public class AppTest {
             g.execute(inputs, outputs);
 
             var a = outputs[0] instanceof Float ? (float) outputs[0] : (int) outputs[0];
-            return -Math.abs(a - 230);
+            return -Math.abs(a - 59);
         });
 
         var tree = new Tree("Madd", env);
         var worker = new Worker(tree);
 
-        for (var i = 1; i <= 150_000; i++) {
+        for (var i = 1; i <= 150_000_000; i++) {
             worker.step();
 
             if (i % 1000 == 0) {
@@ -61,6 +61,9 @@ public class AppTest {
                 System.out.printf("%08d, %05d, %08d, (Fitness: %.02f)%n", tree.getNumGraphsProcessed(),
                         tree.getNumSolutionsFound(), tree.getNumOpenGraphs(), best.heuristic());
                 System.out.println(best.graph());
+
+                if (best.heuristic() == 0)
+                    break;
             }
         }
     }
