@@ -6,7 +6,7 @@ import net.whg.graph.DataType;
 import net.whg.graph.Environment;
 import net.whg.graph.NodeType;
 import net.whg.impl.axioms.MaxConnectionsAxiom;
-import net.whg.impl.heuristics.MinConnectionsHeuristic;
+import net.whg.impl.heuristics.MaxConnectionsHeuristic;
 import net.whg.impl.libs.Arithmetic;
 import net.whg.solver.Tree;
 import net.whg.solver.Worker;
@@ -20,7 +20,7 @@ public class AppTest {
         var env = new Environment();
         env.loadLibrary(new Arithmetic());
         env.addAxiom(new MaxConnectionsAxiom(20));
-        env.addHeuristic(new MinConnectionsHeuristic());
+        env.addHeuristic(new MaxConnectionsHeuristic());
 
         var f = env.getDataType("Float");
         env.addNodeType(new NodeType("Input", null, new DataType[0], new DataType[] { f, f, f }));
