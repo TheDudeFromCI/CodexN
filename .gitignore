@@ -8,3 +8,5 @@ graphsolver/dependency-reduced-pom.xml
 graphsolver/buildNumber.properties
 graphsolver/.mvn/timing.properties
 graphsolver/.mvn/wrapper/maven-wrapper.jar
+
+heuristic_server/__pycache__/

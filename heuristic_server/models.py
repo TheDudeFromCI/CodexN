@@ -95,17 +95,15 @@ class GraphRNN(nn.Module):
 
         self.transformer = nn.Transformer(d_model=embed_size, nhead=n_heads, num_encoder_layers=encoder_layers,
                              num_decoder_layers=decoder_layers, dim_feedforward=dim_fc)
+        
+        self.activation = nn.Sigmoid()
 
     def forward(self, problem, solution, next_vectors, problem_mask, solution_mask, next_vectors_mask):
         x = self.transformer(solution, problem, src_key_padding_mask=solution_mask, tgt_key_padding_mask=problem_mask)
 
         x = torch.einsum('qnd,knd->nqk', [x, next_vectors])
         x = torch.mean(x, dim=1)
-
-        x = x - torch.where(next_vectors_mask, torch.ones_like(x) * float('inf'), torch.zeros_like(x))
-        x = F.softmax(x / (self.embed_size ** 0.5), dim=1)
-
-        return x
+        return self.activation(x)
 
 class GraphSolver(nn.Module):
     def __init__(self, problem_encoder, solution_encoder, rnn, lr=0.01):
@@ -122,7 +120,6 @@ class GraphSolver(nn.Module):
 
         problems, _, _, problem_mask, _ = self.problem_encoder(problems)
         solutions, next_vectors, target_vectors, solution_mask, next_vectors_mask = self.solution_encoder(solutions)
-
         real_vectors = self.rnn(problems, solutions, next_vectors, problem_mask, solution_mask, next_vectors_mask)
 
         if train:
@@ -132,5 +129,4 @@ class GraphSolver(nn.Module):
             return loss.item()
 
         else:
-            _, indices = torch.max(real_vectors, dim=1)
-            return indices.numpy()
+            return real_vectors.detach().numpy()
