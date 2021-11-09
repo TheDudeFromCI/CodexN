@@ -1,9 +1,9 @@
 package net.whg.impl.libs;
 
 import net.whg.graph.DataType;
-import net.whg.graph.Environment;
 import net.whg.graph.Executor;
 import net.whg.graph.NodeType;
+import net.whg.solver.Environment;
 
 /**
  * A collection of existing node types, data types, and axioms that should be

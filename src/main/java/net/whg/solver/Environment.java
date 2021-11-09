@@ -1,11 +1,11 @@
-package net.whg.graph;
+package net.whg.solver;
 
 import java.util.List;
 
+import net.whg.graph.DataType;
+import net.whg.graph.Graph;
+import net.whg.graph.NodeType;
 import net.whg.impl.libs.Library;
-import net.whg.solver.Axiom;
-import net.whg.solver.FitnessEval;
-import net.whg.solver.Heuristic;
 import net.whg.util.SafeArrayList;
 
 /**

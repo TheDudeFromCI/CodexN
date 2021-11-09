@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.whg.solver.Environment;
 import net.whg.util.SafeArrayList;
 
 public class Graph {

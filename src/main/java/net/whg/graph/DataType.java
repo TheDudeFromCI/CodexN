@@ -15,7 +15,7 @@ public final class DataType {
      * 
      * @param name - The name of this data type.
      */
-    DataType(String name) {
+    public DataType(String name) {
         this.name = name;
     }
 

@@ -3,7 +3,6 @@ package net.whg.solver;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import net.whg.graph.Environment;
 import net.whg.graph.Graph;
 
 /**

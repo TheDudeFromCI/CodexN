@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Random;
 
-import net.whg.graph.Environment;
 import net.whg.graph.Graph;
+import net.whg.solver.Environment;
 import net.whg.solver.GraphResult;
 
-public class TrainingWorker implements Runnable {
+public class TrainingWorker {
     private final PriorityQueue<GraphTrainingResult> tree = new PriorityQueue<>();
     private final List<GraphTrainingResult> solutions = new ArrayList<>();
     private final List<Graph> firstGeneration = new ArrayList<>();

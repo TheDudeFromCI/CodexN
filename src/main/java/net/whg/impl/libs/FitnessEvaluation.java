@@ -1,6 +1,6 @@
 package net.whg.impl.libs;
 
-import net.whg.graph.Environment;
+import net.whg.solver.Environment;
 
 public class FitnessEvaluation extends Library {
     @Override
