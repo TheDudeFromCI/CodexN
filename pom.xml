@@ -8,7 +8,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <name>Codex</name>
-  <url>https://github.com/TheDudeFromCI/AI-GraphSolver-Test</url>
+  <url>https://github.com/TheDudeFromCI/Codex</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
