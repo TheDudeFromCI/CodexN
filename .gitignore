@@ -1,12 +1,11 @@
-graphsolver/target/
-graphsolver/pom.xml.tag
-graphsolver/pom.xml.releaseBackup
-graphsolver/pom.xml.versionsBackup
-graphsolver/pom.xml.next
-graphsolver/release.properties
-graphsolver/dependency-reduced-pom.xml
-graphsolver/buildNumber.properties
-graphsolver/.mvn/timing.properties
-graphsolver/.mvn/wrapper/maven-wrapper.jar
-
-heuristic_server/__pycache__/
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# https://github.com/takari/maven-wrapper#usage-without-binary-jar
+.mvn/wrapper/maven-wrapper.jar

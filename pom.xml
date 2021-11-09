@@ -4,10 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.whg</groupId>
-  <artifactId>graphsolver</artifactId>
+  <artifactId>codex</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>AI-GraphSolver-Test</name>
+  <name>Codex</name>
   <url>https://github.com/TheDudeFromCI/AI-GraphSolver-Test</url>
 
   <properties>
